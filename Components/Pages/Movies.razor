@@ -1,0 +1,42 @@
+﻿@page "/"
+@rendermode InteractiveServer
+
+<PageTitle>Movie List</PageTitle>
+
+<header class="p-5 text-center">
+  <h1 class="display-4">Movie List (@movies.Count)</h1>
+  <p>Number of Movies Watched (@movies.Count(m => m.Watched))</p>
+</header>
+
+<form class="form p-5 bg-light border border-1 mb-5">
+  <input type="search" class="form-control" placeholder="Search..." 
+    @bind="Search" 
+    @bind:event="oninput" 
+    @bind:after="SearchMovies" />
+</form>
+
+<ul class="list-group mb-5">
+  @foreach (var movie in movies)
+  {
+    <MovieItem Movie="movie" OnClick="ToggleWatched" />
+  }
+</ul>
+
+@code {
+  private List<Movie> movies = Helper.GetMovies();
+  private string Search { get; set; } = "";
+
+  private void ToggleWatched(Movie movie)
+  {
+    movie.Watched = !movie.Watched;
+  }
+
+  private void SearchMovies()
+  {
+    movies = Helper.GetMovies();
+    if (!string.IsNullOrWhiteSpace(Search))
+    {
+      movies = movies.FindAll(m => m.Title.ToLower().Contains(Search.ToLower()));
+    }
+  }
+}

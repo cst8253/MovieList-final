@@ -1,0 +1,25 @@
+﻿<li class="list-group-item" @onclick="TriggerEvent">
+  @if (Movie.Watched)
+  {
+    <span class="me-3">&checkmark;</span>
+  }
+  <a href="/movie/@Movie.Id">@Movie.Title</a>
+</li>
+
+@code {
+  [Parameter]
+  public Movie Movie { get; set; } = new Movie();
+
+  @* private void ToggleWatched()
+  {
+    Movie.Watched = !Movie.Watched;
+  } *@
+
+  [Parameter]
+  public EventCallback<Movie> OnClick { get; set; }
+
+  private async Task TriggerEvent()
+  {
+    await OnClick.InvokeAsync(Movie);
+  }
+}
